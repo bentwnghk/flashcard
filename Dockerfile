@@ -11,9 +11,6 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# Remove dev dependencies after build to reduce image size
-RUN npm prune --production
-
 # Production stage
 FROM node:20-alpine AS runner
 WORKDIR /app
@@ -30,6 +27,10 @@ COPY --from=deps --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=deps --chown=nextjs:nodejs /app/public ./public
 COPY --from=deps --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=deps --chown=nextjs:nodejs /app/next.config.ts ./next.config.ts
+
+# Ensure TypeScript is available and permissions are correct
+RUN npm install --no-save typescript
+RUN chown -R nextjs:nodejs /app/node_modules
 
 USER nextjs
 
