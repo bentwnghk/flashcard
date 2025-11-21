@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Install all dependencies (including dev dependencies for build)
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm ci --include=dev
 
 # Build the application
 COPY . .
@@ -30,7 +30,7 @@ COPY --from=deps --chown=nextjs:nodejs /app/next.config.ts ./next.config.ts
 
 # Ensure TypeScript is available and permissions are correct
 RUN npm install --no-save typescript
-RUN chown -R nextjs:nodejs /app/node_modules
+RUN chown -R nextjs:nodejs /app
 
 USER nextjs
 
@@ -39,4 +39,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["npm", "start"]
+CMD ["node", ".next/standalone/server.js"]
