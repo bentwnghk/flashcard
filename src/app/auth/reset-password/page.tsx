@@ -25,10 +25,12 @@ function ResetPasswordContent() {
     if (accessToken && refreshToken) {
       setIsResetMode(true);
       // Set the session using the tokens from the URL
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      });
+      if (supabase) {
+        supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+      }
     }
   }, [searchParams]);
 
@@ -50,6 +52,11 @@ function ResetPasswordContent() {
     }
 
     try {
+      if (!supabase) {
+        setError("Authentication service is not available");
+        return;
+      }
+
       if (isResetMode) {
         // Update the user's password
         const { error } = await supabase.auth.updateUser({

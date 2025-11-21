@@ -20,6 +20,11 @@ export default function SigninPage() {
     setLoading(true);
 
     try {
+      if (!supabase) {
+        setError("Authentication service is not available");
+        return;
+      }
+
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -44,6 +49,11 @@ export default function SigninPage() {
     }
 
     try {
+      if (!supabase) {
+        setError("Authentication service is not available");
+        return;
+      }
+
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth/reset-password`,
       });

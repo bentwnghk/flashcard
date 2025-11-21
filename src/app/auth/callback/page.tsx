@@ -14,6 +14,12 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
+        if (!supabase) {
+          setError("Authentication service is not available");
+          setLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
